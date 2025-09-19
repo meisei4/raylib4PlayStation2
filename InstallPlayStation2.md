@@ -1,8 +1,8 @@
-# Install for Dreamcast
-- Install last kos and kos-port follow steps from https://dreamcast.wiki/Getting_Started_with_Dreamcast_development
+# Install for PlayStation 2
+- Install last ps2dev ps2sdk follow steps from https://github.com/ps2dev/ps2dev
 - clone this repository and execute if you are in Unix like environtment including wsl2:
 ```
-./dreamcastbuild.sh
+./PlayStation2Build.sh
 ```
 
 # Samples
@@ -10,31 +10,32 @@
 ```
 % cd samples
 % ls
-models  shapes
-% cd models
-% ls
-cubicmap
-% cd cubicmap
-% ls
-Makefile  main.c  romdisk
+shapes
+basic_shapes  collision_area  logo_raylib_anim	mix
+% cd logo_raylib_anim
+% make clean
+rm -f *.elf *.o *.a *.s
 % make
-rm -f raylib.elf romdisk.*
-kos-cc  -c main.c -o main.o
-/usr/local/dcdev/kos/utils/genromfs/genromfs -f romdisk.img -d romdisk -v -x .svn -x .keepme
-0    rom 1706461643       [0xffffffff, 0xffffffff] 37777777777, sz     0, at 0x0
-1    .                    [0x820     , 0x5c9     ] 0040755, sz     0, at 0x20
-1    ..                   [0x820     , 0x5951b   ] 0040755, sz     0, at 0x40     [link to 0x20    ]
-1    cubicmap_atlas.png   [0x820     , 0x59520   ] 0100644, sz 37160, at 0x60
-1    cubicmap.png         [0x820     , 0x5951f   ] 0100644, sz   164, at 0x91c0
-/usr/local/dcdev/kos/utils/bin2o/bin2o romdisk.img romdisk romdisk_tmp.o
-/usr/local/dcdev/sh-elf/bin/sh-elf-gcc -o romdisk.o -r romdisk_tmp.o -L/usr/local/dcdev/kos/lib/dreamcast -L/usr/local/dcdev/kos/addons/lib/dreamcast -L/usr/local/dcdev/kos/../kos-ports/lib -Wl,--whole-archive -lromdiskbase
-rm romdisk_tmp.o
-kos-cc -o raylib.elf main.o romdisk.o -lraylib -lGL -lm -lkosutils
+/Applications/Xcode.app/Contents/Developer/usr/bin/make raylib.elf
+mips64r5900el-ps2-elf-gcc -D_EE -G0 -O2 -Wall -gdwarf-2 -gz -I/usr/local/newps2dev/ps2sdk/ports/include -I../shared_code/  -Wno-strict-aliasing -Wno-conversion-null  -DNO_VU0_VECTORS -DNO_ASM -I/usr/local/newps2dev/ps2sdk/ee/include -I/usr/local/newps2dev/ps2sdk/common/include -I.  -c main.c -o main.o
+cc1: warning: command-line option '-Wno-conversion-null' is valid for C++/ObjC++ but not for C
+main.c: In function 'updateController':
+main.c:39:10: warning: variable 'dpadUpDown' set but not used [-Wunused-but-set-variable]
+   39 |     bool dpadUpDown;
+      |          ^~~~~~~~~~
+main.c:38:10: warning: variable 'dpadDownDown' set but not used [-Wunused-but-set-variable]
+   38 |     bool dpadDownDown;
+      |          ^~~~~~~~~~~~
+main.c:37:10: warning: variable 'dpadRightDown' set but not used [-Wunused-but-set-variable]
+   37 |     bool dpadRightDown;
+      |          ^~~~~~~~~~~~~
+main.c:36:10: warning: variable 'dpadLeftDown' set but not used [-Wunused-but-set-variable]
+   36 |     bool dpadLeftDown;
+      |          ^~~~~~~~~~~~
+mips64r5900el-ps2-elf-g++ -T/usr/local/newps2dev/ps2sdk/ee/startup/linkfile -O2 -o raylib.elf main.o  -L/usr/local/newps2dev/ps2sdk/ee/lib -Wl,-zmax-page-size=128 -s -L/usr/local/newps2dev/ps2sdk/ports/lib -lraylib -lps2gl -lps2stuff -lpad -ldm
 ```
-- If you have a broadband adapter make it happy using 
-```
-% dc-tool-ip -t HEREYOURDREAMCASTIP -x  raylib.elf
-```
+- Use pcsx2 or your ps2client/ps2sh tools to load elf
+
 
 Enjoy!!!!
 
