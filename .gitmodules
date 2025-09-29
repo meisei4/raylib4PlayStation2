@@ -1,0 +1,8 @@
+[submodule "ps2gl"]
+	path = ps2gl
+	url = https://github.com/ps2dev/ps2gl.git
+	branch = master
+[submodule "raylib"]
+	path = raylib
+	url = https://github.com/raylib4Consoles/raylib.git
+	branch = master
