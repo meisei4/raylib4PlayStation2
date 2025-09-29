@@ -54,3 +54,5 @@ dkms.conf
 #mac
 .DS_Store
 ._*
+
+.idea
