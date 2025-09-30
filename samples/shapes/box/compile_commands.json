@@ -1,0 +1,69 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-DPLATFORM_DESKTOP",
+      "-DPLATFORM_DESKTOP_GLFW",
+      "-DGRAPHICS_API_OPENGL_11",
+      "-I../shared_code/",
+      "-I/home/adduser/raylib/src",
+      "-I/home/adduser/raylib/src/external",
+      "-H",
+      "-frecord-gcc-switches",
+      "-o",
+      "main",
+      "main.c"
+    ],
+    "directory": "/home/adduser/raylib4PlayStation2/samples/shapes/box",
+    "file": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.c",
+    "output": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main"
+  },
+  {
+    "arguments": [
+      "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
+      "-D_EE",
+      "-G0",
+      "-O2",
+      "-Wall",
+      "-gdwarf-2",
+      "-gz",
+      "-I/usr/local/ps2dev/ps2sdk/ports/include",
+      "-I../shared_code/",
+      "-Wno-strict-aliasing",
+      "-DNO_VU0_VECTORS",
+      "-DNO_ASM",
+      "-H",
+      "-frecord-gcc-switches",
+      "-I/usr/local/ps2dev/ps2sdk/ee/include",
+      "-I/usr/local/ps2dev/ps2sdk/common/include",
+      "-I.",
+      "-c",
+      "-o",
+      "main.o",
+      "main.c"
+    ],
+    "directory": "/home/adduser/raylib4PlayStation2/samples/shapes/box",
+    "file": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.c",
+    "output": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
+      "-H",
+      "-I/usr/local/ps2dev/ps2sdk/ports/include",
+      "-I../shared_code/",
+      "-I.",
+      "-c",
+      "-o",
+      "/dev/null",
+      "main.c"
+    ],
+    "directory": "/home/adduser/raylib4PlayStation2/samples/shapes/box",
+    "file": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.c",
+    "output": "/dev/null"
+  }
+]
