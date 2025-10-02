@@ -35,7 +35,7 @@ int main(void)
     SetTargetFPS(60);
     rlEnableDepthTest();
     reshape(screenWidth, screenHeight);
-    build_rgb_cube_model();
+    // build_rgb_cube_model();
     while (!WindowShouldClose())
     {
         if (IsWindowResized()) reshape(GetScreenWidth(), GetScreenHeight());
@@ -56,12 +56,12 @@ int main(void)
                 perspective(40.0f, (float)GetScreenWidth()/(float)GetScreenHeight(), 0.1f, 4000.0f);
                 rlMatrixMode(RL_MODELVIEW);
                 rlLoadIdentity();
-                // draw_rgb_cube();
-                draw_rgb_cube_model();
+                draw_rgb_cube();
+                // draw_rgb_cube_model();
             EndMode3D();
         EndDrawing();
     }
-    UnloadModel(rgb_cube_model);
+    // UnloadModel(rgb_cube_model);
 
     CloseWindow();
     return 0;
