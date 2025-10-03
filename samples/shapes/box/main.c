@@ -18,8 +18,6 @@ static const float cube_forward_rotation = -18.0f;
 
 static Model rgb_cube_model;
 
-static void reshape(int width, int height);
-static void perspective(float fov, float aspect, float nearClip, float farClip);
 static void cube_position_and_rotation(void);
 static void draw_rgb_cube(void);
 static inline void colored_vertex(float r, float g, float b, float x, float y, float z);
@@ -32,13 +30,15 @@ int main(void)
     const int screenWidth  = ATTR_PLAYSTATION2_WIDTH;
     const int screenHeight = ATTR_PLAYSTATION2_HEIGHT;
     InitWindow(screenWidth, screenHeight, "RGB Cube");
+
+    //TODO: this causes issues only with the DrawArrays nature of raylib...
+    // where i have to understand RGB vs RGBA and the GS tags stuff:
+    rlDisableColorBlend();
+
     SetTargetFPS(60);
-    rlEnableDepthTest();
-    reshape(screenWidth, screenHeight);
     // build_rgb_cube_model();
     while (!WindowShouldClose())
     {
-        if (IsWindowResized()) reshape(GetScreenWidth(), GetScreenHeight());
         cube_spin_angle += 0.2f;
         BeginDrawing();
             ClearBackground(BLACK);
@@ -51,42 +51,14 @@ int main(void)
             camera.fovy     = 40.0f;
             camera.projection = CAMERA_PERSPECTIVE;
             BeginMode3D(camera);
-                rlMatrixMode(RL_PROJECTION);
-                rlLoadIdentity();
-                perspective(40.0f, (float)GetScreenWidth()/(float)GetScreenHeight(), 0.1f, 4000.0f);
-                rlMatrixMode(RL_MODELVIEW);
-                rlLoadIdentity();
                 draw_rgb_cube();
                 // draw_rgb_cube_model();
             EndMode3D();
         EndDrawing();
     }
     // UnloadModel(rgb_cube_model);
-
     CloseWindow();
     return 0;
-}
-
-static void reshape(int width, int height)
-{
-    if (height <= 0) height = 1;
-    rlViewport(0, 0, width, height);
-    rlMatrixMode(RL_PROJECTION);
-    rlLoadIdentity();
-    perspective(40.0f, (float)width/(float)height, 0.1f, 4000.0f);
-    rlMatrixMode(RL_MODELVIEW);
-    rlLoadIdentity();
-}
-
-static void perspective(float fov, float aspect, float nearClip, float farClip)
-{
-    float fovRad = fov * (PI/180.0f);
-    float h = 2.0f * nearClip * tanf(fovRad*0.5f);
-    float w = h * aspect;
-    rlMatrixMode(RL_PROJECTION);
-    rlFrustum(-w*0.5f, w*0.5f, -h*0.5f, h*0.5f, nearClip, farClip);
-    rlMatrixMode(RL_MODELVIEW);
-    rlLoadIdentity();
 }
 
 static void cube_position_and_rotation(void)

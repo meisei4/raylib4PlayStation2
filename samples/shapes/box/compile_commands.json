@@ -1,29 +1,6 @@
 [
   {
     "arguments": [
-      "/usr/bin/cc",
-      "-c",
-      "-O2",
-      "-Wall",
-      "-Wextra",
-      "-DPLATFORM_DESKTOP",
-      "-DPLATFORM_DESKTOP_GLFW",
-      "-DGRAPHICS_API_OPENGL_11",
-      "-I../shared_code/",
-      "-I/home/adduser/raylib/src",
-      "-I/home/adduser/raylib/src/external",
-      "-H",
-      "-frecord-gcc-switches",
-      "-o",
-      "main",
-      "main.c"
-    ],
-    "directory": "/home/adduser/raylib4PlayStation2/samples/shapes/box",
-    "file": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.c",
-    "output": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main"
-  },
-  {
-    "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
       "-D_EE",
       "-G0",
@@ -52,18 +29,25 @@
   },
   {
     "arguments": [
-      "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-gcc",
-      "-H",
-      "-I/usr/local/ps2dev/ps2sdk/ports/include",
-      "-I../shared_code/",
-      "-I.",
+      "/usr/bin/cc",
       "-c",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-DPLATFORM_DESKTOP",
+      "-DPLATFORM_DESKTOP_GLFW",
+      "-DGRAPHICS_API_OPENGL_11",
+      "-I../shared_code/",
+      "-I/home/adduser/raylib/src",
+      "-I/home/adduser/raylib/src/external",
+      "-H",
+      "-frecord-gcc-switches",
       "-o",
-      "/dev/null",
+      "main",
       "main.c"
     ],
     "directory": "/home/adduser/raylib4PlayStation2/samples/shapes/box",
     "file": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main.c",
-    "output": "/dev/null"
+    "output": "/home/adduser/raylib4PlayStation2/samples/shapes/box/main"
   }
 ]
