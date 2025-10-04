@@ -6,6 +6,7 @@ DB_OUT ?= $(abspath ./compile_commands.json)
 JOBS   ?= $(shell nproc 2>/dev/null || echo 8)
 
 PS2GL_LOCAL  ?= $(abspath ./ps2gl)
+# PS2GL_CUSTOM ?= $(abspath $(PS2GL_CUSTOM_ROOT))
 PS2GL_CUSTOM ?= $(abspath ../ps2gl)
 PS2GL_DEBUG  ?= 0
 
@@ -14,6 +15,7 @@ RAYLIB_DEBUG ?= 0
 
 SAMPLES_DIR := $(abspath ./samples)
 BIN_DIR     := $(abspath ./bin)
+# PCSX2_BIN   ?= $(or $(PCSX2),pcsx2)
 PCSX2_BIN   ?= pcsx2
 PCSX2_FLAGS ?= -nogui -batch -fastboot -earlyconsolelog -logfile /dev/null
 
@@ -37,19 +39,26 @@ PS2GL_ROOT    ?= $(PS2GL_LOCAL)
 PS2GL_TARGETS ?= all install
 PS2GL_REAL    ?= $(PS2GL_ROOT)
 
+# PS2_GXX       ?= $(PS2DEV)/ee/bin/mips64r5900el-ps2-elf-g++
 PS2_GXX       ?= /usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++
+# HOST_CC       ?= $(or $(CC),/usr/bin/cc)
 HOST_CC       ?= /usr/bin/cc
 
 PS2GL_LINK    ?= $(abspath ./ps2gl-custom)
 COMPILE_DB_BACKUP := $(DB_OUT).bak
 COMPILE_DB_TEMP   := $(DB_OUT).new
+
+#TODO: these files in raylib4Consoles needs to be treated like c++ i think, i.e. g++ comp
 RCORE_C_ABS    := $(abspath $(RAYLIB_SRC))/rcore.c
 RCORE_PS2C_ABS := $(abspath $(RAYLIB_SRC))/platforms/rcore_playstation2.c
 
+# PS2SDK_EE_INC     ?= $(PS2SDK)/ee/include
 PS2SDK_EE_INC     ?= /usr/local/ps2dev/ps2sdk/ee/include
+# PS2SDK_COMMON_INC ?= $(PS2SDK)/common/include
 PS2SDK_COMMON_INC ?= /usr/local/ps2dev/ps2sdk/common/include
+# PS2SDK_PORTS_INC  ?= $(PS2SDK)/ports/include
 PS2SDK_PORTS_INC  ?= /usr/local/ps2dev/ps2sdk/ports/include
-RAYLIB_SRC_INC    := $(abspath $(RAYLIB_SRC))/include
+RAYLIB_SRC_INC    := $(abspath $(RAYLIB_SRC))
 
 .PHONY: all with-custom-ps2gl _build_stack fixdb samples clean clean-samples print
 
@@ -136,6 +145,26 @@ fixdb:
 	   } \
 	   n=split(s, lines, "\n"); return n; \
 	 } \
+	 function maybe_inject_lang_std_c(lines, n,    k,hasxpair,hasxc,hasstd,indent,i,s){ \
+	   hasxpair=hasxc=hasstd=0; \
+	   if(ARGB>0 && ARGE>0) for(k=ARGB+1;k<ARGE;k++){ \
+	     if(lines[k] ~ /"-x"[ \t]*,/) hasxpair=1; \
+	     if(lines[k] ~ /"c"[ \t]*,/) if(!hasxpair && k>ARGB+1) hasxpair=1; \
+	     if(lines[k] ~ /"-xc"/) hasxc=1; \
+	     if(lines[k] ~ /"(--)?std=[^"]+"/) hasstd=1; \
+	   } \
+	   need_lang=!(hasxpair||hasxc); need_std=!hasstd; \
+	   if(!(need_lang||need_std)) return n; \
+	   indent=""; if(ARGI>0 && match(lines[ARGI],/^[ \t]+/)) indent=substr(lines[ARGI],RSTART,RLENGTH); \
+	   s=""; for(i=1;i<=n;i++){ \
+	     s=s lines[i] ORS; \
+	     if(i==ARGI){ \
+	       if(need_lang){ s=s indent "\"-x\"," ORS indent "\"c\"," ORS } \
+	       if(need_std){  s=s indent "\"-std=gnu99\"," ORS } \
+	     } \
+	   } \
+	   n=split(s, lines, "\n"); return n; \
+	 } \
 	 function add_forced_includes(lines,n,   i,ins,inject_after,s){ \
        ins = "\"-I" RINC "\"," ORS \
              "\"-I" PINC "\"," ORS \
@@ -151,6 +180,7 @@ fixdb:
        } \
        n=split(s, lines, "\n"); return n; \
      } \
+	 function get_file_path(obj,   m){ if(match(obj, /"file"[ \t]*:[ \t]*"([^"]+)"/, m)) return m[1]; return "" } \
 	 { \
 	   if(!inobj){ if($$0 ~ /^[ \t]*\{/ && depth==0){ inobj=1; depth=1; buf=$$0 ORS } ; next } \
 	   buf = buf $$0 ORS; \
@@ -163,7 +193,19 @@ fixdb:
 	   gsub("\"file\"[ \t]*:[ \t]*\"" PS2GL_REAL "/", "\"file\": \"" PS2GL_LINK "/", obj); \
 	   gsub("\"directory\"[ \t]*:[ \t]*\"" PS2GL_REAL "\"", "\"directory\": \"" PS2GL_LINK "\"", obj); \
 	   if (obj ~ "\"file\"[ \t]*:[ \t]*\"" RCORE_C "\""){ rcore_buf=obj; have_rcore=1 } \
-	   if(drv==PS2_GXX){ n=split(obj,L,"\n"); n=maybe_inject_lang_std(L,n); obj=""; for(i=1;i<=n;i++) obj=obj L[i] ORS } \
+	   if(drv==PS2_GXX){ \
+	     n=split(obj,L,"\n"); \
+	     file=get_file_path(obj); \
+	     if(file==RCORE_C || file==RCORE_PS2C){ \
+	       n=maybe_inject_lang_std(L,n); \
+	     } else if(file ~ /\/raylib\/src\/.*\.c$$/){ \
+	       n=maybe_inject_lang_std_c(L,n); \
+	     } else { \
+	       n=maybe_inject_lang_std(L,n); \
+	     } \
+	     n=add_forced_includes(L,n); \
+	     obj=""; for(i=1;i<=n;i++) obj=obj L[i] ORS; \
+	   } \
 	   if(!first) print ","; first=0; print obj; \
 	   inobj=0; buf=""; depth=0; \
 	 } \
