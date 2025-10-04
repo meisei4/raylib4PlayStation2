@@ -2,9 +2,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -33,9 +30,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -64,9 +58,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -150,9 +141,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -180,9 +168,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -210,9 +195,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -240,9 +222,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -270,9 +249,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -300,9 +276,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -330,9 +303,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
@@ -360,9 +330,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -392,9 +359,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -424,9 +388,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -456,9 +417,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -488,9 +446,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -520,9 +475,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -552,9 +504,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -584,9 +533,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -616,9 +562,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -648,9 +591,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -680,9 +620,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -712,9 +649,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -744,9 +678,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -776,9 +707,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -808,9 +736,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -840,9 +765,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -872,9 +794,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -904,9 +823,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -936,9 +852,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -968,9 +881,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-D_EE",
       "-G0",
       "-O2",
@@ -1000,9 +910,6 @@
   {
     "arguments": [
       "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
-      "-x",
-      "c++",
-      "-std=gnu++17",
       "-c",
       "-D_EE",
       "-G0",
