@@ -1,12 +1,36 @@
+# TODO: 1. fix refresh thing when compilation database caches in half-finished state before post-process ugliness
+# TODO: 2. clean up all the fixdb stuff from a post-process ugly script (find some actual existing tool for this C<->C++ hybrid chaos
+# TODO: 3. really test the whole environment agnostic stuff (no hardcoded paths, move stuff like vcl to ps2dev toolchain perhaps)
+# TODO: 4. add some ccache stuff?
+# TODO: 5. add some sort of screen logging that can be read from the elfs stuff that is defined in this makefile getting overlayed on screen during the elf runs
+# TODO: 6. add raylib desktop opengl11 and ps2 builds SIDE BY SIDE like how its done in the /samples/shapes/box/Makefile ./main, ./main_ps2
+               # main: main.c
+               #	$(CC) -O2 -Wall -Wextra -DPLATFORM_DESKTOP -DPLATFORM_DESKTOP_GLFW -DGRAPHICS_API_OPENGL_11 \
+               #	  -I../shared_code/ -I/home/adduser/raylib/src -I/home/adduser/raylib/src/external \
+               #	  $(HOST_CFLAGS) main.c -o $@ \
+               #	  -L/home/adduser/raylib/src -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 -latomic \
+               #	  $(HOST_LDFLAGS) $(TRACE_REDIRECT) #?????????????
+               #
+               #$(PS2RUN): $(EE_BIN)
+               #	@echo '#!/usr/bin/env bash' >  $@
+               #	@echo "$(PCSX2_BIN) $(PCSX2_FLAGS) -elf ./$(EE_BIN)" >> $@
+               #	@chmod +x $@
+
+# TODO: 7. improve clarity about vendored libraries (raylib vs ps2gl, git submodules and symlinking still feels like a hack...)
+# TODO: 8. be more utility about the logging to allow for easy visual text parsing during build time or with logs, especially when testing complex stuff later
+# TODO: 9. study how to rebuild elfs and get pcsx2 to maybe even hot reload?? (idk, nightmare difficulty level if not impossible)
+# TODO: 10. document how this all works, and make it clear that its only really neccessary for overengineered study of C/C++ friendly development
 SHELL := /bin/bash
+export PATH := $(HOME)/.ccache_wrappers:$(PATH)
+
 .DEFAULT_GOAL := all
 SELF_MAKEFILE := $(lastword $(MAKEFILE_LIST))
 
-BEAR_BASE   = bear --output $(DB_OUT)
-BEAR_APPEND = bear --append --output $(DB_OUT)
-
 DB_OUT ?= $(abspath ./compile_commands.json)
-COMPILE_DB_BACKUP := $(DB_OUT).bak
+DB_RAW := $(DB_OUT).raw
+BEAR_BASE   = bear --output $(DB_RAW)
+BEAR_APPEND = bear --append --output $(DB_RAW)
+
 COMPILE_DB_TEMP   := $(DB_OUT).new
 JOBS   ?= $(shell nproc 2>/dev/null || echo 8)
 MAKE_JOBS_FLAG := -j$(JOBS)
@@ -34,6 +58,7 @@ PS2SDK_COMMON_INC ?= $(PS2SDK)/common/include
 PS2SDK_PORTS_INC  ?= $(PS2SDK)/ports/include
 
 PS2_GXX       ?= $(PS2DEV)/ee/bin/mips64r5900el-ps2-elf-g++
+PS2_GCC       ?= $(PS2DEV)/ee/bin/mips64r5900el-ps2-elf-gcc
 HOST_CC       ?= cc
 
 PCSX2_BIN     ?= pcsx2
@@ -42,6 +67,41 @@ PCSX2_FLAGS   ?= -nogui -batch -fastboot -earlyconsolelog -logfile /dev/null
 WARN ?= 1
 ifeq ($(WARN),0)
   RAYLIB_NOWARN := WARNING_FLAGS=-w
+endif
+
+ENABLE_CCACHE ?= 0
+PS2_TOOLCHAIN_NAME := mips64r5900el-ps2-elf
+PS2_GCC_NAME := $(PS2_TOOLCHAIN_NAME)-gcc
+PS2_GXX_NAME := $(PS2_TOOLCHAIN_NAME)-g++
+PS2_GCC ?= $(shell command -v $(PS2_GCC_NAME) 2>/dev/null)
+PS2_GXX ?= $(shell command -v $(PS2_GXX_NAME) 2>/dev/null)
+ifeq ($(ENABLE_CCACHE),1)
+  CCACHE_BIN := $(shell command -v ccache 2>/dev/null)
+  ifneq ($(CCACHE_BIN),)
+    PS2_GCC := $(CCACHE_BIN) $(PS2_GCC)
+    PS2_GXX := $(CCACHE_BIN) $(PS2_GXX)
+  endif
+endif
+export CC := $(PS2_GCC)
+export CXX := $(PS2_GXX)
+
+.PHONY: setup-ccache
+setup-ccache:
+	@set -euo pipefail; \
+	if [ "$(ENABLE_CCACHE)" != "1" ]; then \
+	  echo "ccache disabled (ENABLE_CCACHE=0). Skipping wrapper setup."; exit 0; \
+	fi; \
+	if ! command -v ccache >/dev/null 2>&1; then \
+	  echo "ccache not found in PATH. Install it or set ENABLE_CCACHE=0."; exit 0; \
+	fi; \
+	mkdir -p "$(HOME)/.ccache_wrappers"; \
+	for t in gcc g++; do \
+	  ln -sf "$$(command -v ccache)" "$(HOME)/.ccache_wrappers/$(PS2_TOOLCHAIN_NAME)-$$t"; \
+	done; \
+	echo "Wrappers ready in $$HOME/.ccache_wrappers (gcc/g++)."
+
+ifeq ($(ENABLE_CCACHE),1)
+all: setup-ccache
 endif
 
 PS2GL_DEBUG  ?= 0
@@ -89,20 +149,21 @@ with-vendored-ps2gl: export PS2GL_ROOT := $(PS2GL_VENDORED)
 with-vendored-ps2gl: export PS2GL_TARGETS := clean all install
 with-vendored-ps2gl: export PS2GL_REAL := $(PS2GL_VENDORED)
 with-vendored-ps2gl:
-	@rm -vf $(DB_OUT)
+	@rm -vf $(DB_OUT) $(DB_RAW)
 	@$(MAKE) -f $(SELF_MAKEFILE) _build_stack PS2GL_ROOT=$(PS2GL_ROOT) PS2GL_TARGETS="$(PS2GL_TARGETS)"
 	@$(MAKE) -f $(SELF_MAKEFILE) fixdb PS2GL_REAL=$(PS2GL_REAL)
 	@echo "--------------------------DONE---------------------------------"
 
+.NOTPARALLEL: fixdb
 fixdb:
 	@set -eu
 	ln -sfn $(PS2GL_REAL) $(PS2GL_LINK)
-	cp -f $(DB_OUT) $(COMPILE_DB_BACKUP)
-	awk -v PS2_GXX='$(PS2_GXX)' -v HOST_CC='$(HOST_CC)' \
+	awk -v PS2_GXX='$(PS2_GXX)' -v PS2_GCC='$(PS2_GCC)' -v HOST_CC='$(HOST_CC)' \
 	    -v PS2GL_REAL='$(PS2GL_REAL)' -v PS2GL_LINK='$(PS2GL_LINK)' \
 	    -v RCORE_C='$(RCORE_C_ABS)' -v RCORE_PS2C='$(RCORE_PS2C_ABS)' \
 	    -v EEINC='$(PS2SDK_EE_INC)' -v COMINC='$(PS2SDK_COMMON_INC)' -v PINC='$(PS2SDK_PORTS_INC)' -v RINC='$(RAYLIB_SRC_INC)' \
-	'BEGIN{ depth=0; inobj=0; first=1; have_rcore=0; rcore_buf=""; print "[" } \
+	'BEGIN{ depth=0; inobj=0; first=1; have_rcore=0; rcore_buf=""; printf "[\n" } \
+	 function base(s){ sub(/^.*\//,"",s); return s } \
 	 function parse_driver(lines, n,    i,j,b,e,drv,idx){ \
 	   b=e=idx=0; drv=""; \
 	   for(i=1;i<=n;i++){ \
@@ -182,8 +243,7 @@ fixdb:
 	   gsub("\"file\"[ \t]*:[ \t]*\"" PS2GL_REAL "/", "\"file\": \"" PS2GL_LINK "/", obj); \
 	   gsub("\"directory\"[ \t]*:[ \t]*\"" PS2GL_REAL "\"", "\"directory\": \"" PS2GL_LINK "\"", obj); \
 	   if (obj ~ "\"file\"[ \t]*:[ \t]*\"" RCORE_C "\""){ rcore_buf=obj; have_rcore=1 } \
-	   if(drv==PS2_GXX){ \
-	     n=split(obj,L,"\n"); \
+	   if(drv==PS2_GXX || drv==PS2_GCC){ \
 	     file=get_file_path(obj); \
 	     if(file==RCORE_C || file==RCORE_PS2C){ \
 	       n=maybe_inject_lang_std(L,n); \
@@ -193,28 +253,35 @@ fixdb:
 	       n=maybe_inject_lang_std(L,n); \
 	     } \
 	     n=add_forced_includes(L,n); \
-	     obj=""; for(i=1;i<=n;i++) obj=obj L[i] ORS; \
+         obj=""; for(i=1;i<=n;i++){ obj = obj L[i]; if(i<n) obj = obj "\n"; } \
 	   } \
-	   if(!first) print ","; first=0; print obj; \
+       sub(/[[:space:]]*,[[:space:]]*$$/, "", obj); \
+       if(!first){ print "," } \
+       first=0; \
+       print obj; \
 	   inobj=0; buf=""; depth=0; \
 	 } \
 	 END{ \
-	   if(have_rcore==1){ \
-	     clone=rcore_buf; \
-	     gsub(/"file"[ \t]*:[ \t]*"[^"]*rcore\.c"/, "\"file\": \"" RCORE_PS2C "\"", clone); \
-	     gsub(/"rcore\.c"/, "\"" RCORE_PS2C "\"", clone); \
-	     gsub(/"rcore\.o"/, "\"rcore_playstation2.o\"", clone); \
-	     n=split(clone, L, "\n"); \
-	     drv=parse_driver(L,n); \
-	     if(drv){ n=maybe_inject_lang_std(L,n); n=add_forced_includes(L,n) } \
-	     clone=""; for(i=1;i<=n;i++) clone=clone L[i] ORS; \
-	     print ","; print clone; \
-	   } \
-	   print "\n]"; \
-	 }' \
-	$(DB_OUT) > $(COMPILE_DB_TEMP)
-	mv -f $(COMPILE_DB_TEMP) $(DB_OUT)
-	@echo "Updated: $(DB_OUT) (backup at $(COMPILE_DB_BACKUP))"
+       if(have_rcore==1){ \
+         clone=rcore_buf; \
+         gsub(/"file"[ \t]*:[ \t]*"[^"]*rcore\.c"/, "\"file\": \"" RCORE_PS2C "\"", clone); \
+         gsub(/"rcore\.c"/, "\"" RCORE_PS2C "\"", clone); \
+         gsub(/"rcore\.o"/, "\"rcore_playstation2.o\"", clone); \
+         n=split(clone, L, "\n"); \
+         drv=parse_driver(L,n); \
+         if(drv){ n=maybe_inject_lang_std(L,n); n=add_forced_includes(L,n) } \
+         clone=""; for(i=1;i<=n;i++){ clone=clone L[i]; if(i<n)clone=clone "\n"; } \
+         gsub(/[[:space:]]+$$/, "", clone); \
+         sub(/[[:space:]]*,[[:space:]]*$$/, "", clone); \
+         if (!first) printf(",\n"); \
+         print clone; \
+       } \
+       printf "\n]\n"; \
+     }' \
+	"$(DB_RAW)" > "$(COMPILE_DB_TEMP)"
+	@sed -i 's/"command": *"ccache /"command": "/g' "$(COMPILE_DB_TEMP)"
+	@jq --indent 4 . "$(COMPILE_DB_TEMP)" > "$(DB_OUT)"
+	@rm -f "$(COMPILE_DB_TEMP)"; echo "Updated: $(DB_OUT) (minified if jq present)"
 
 print:
 	@echo "PROJECT_ABS     = $(PROJECT_ABS)"
@@ -256,7 +323,7 @@ clean-samples:
 	@echo "--------------------------DONE---------------------------------"
 
 clean:
-	@rm -vf $(DB_OUT)
+	@rm -vf $(DB_OUT) $(DB_RAW)
 	@echo "---------------------------0-----------------------------------"
 	@echo "CLEANNNNNNNNNNNING: $(PS2GL_LOCAL)"
 	@$(MAKE) -C $(PS2GL_LOCAL) clean
