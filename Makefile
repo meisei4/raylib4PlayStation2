@@ -34,7 +34,7 @@ PS2SDK_COMMON_INC ?= $(PS2SDK)/common/include
 PS2SDK_PORTS_INC  ?= $(PS2SDK)/ports/include
 
 PS2_GXX       ?= $(PS2DEV)/ee/bin/mips64r5900el-ps2-elf-g++
-HOST_CC       ?= cc
+#HOST_CC       ?= cc
 
 PCSX2_BIN     ?= pcsx2
 PCSX2_FLAGS   ?= -nogui -batch -fastboot -earlyconsolelog -logfile /dev/null
@@ -256,6 +256,7 @@ clean-samples:
 	@echo "--------------------------DONE---------------------------------"
 
 clean:
+	@rm -vf $(PS2GL_LOCAL)/GS_DUMP/hard/* $(PS2GL_VENDORED)/GS_DUMP/hard/*
 	@rm -vf $(DB_OUT)
 	@echo "---------------------------0-----------------------------------"
 	@echo "CLEANNNNNNNNNNNING: $(PS2GL_LOCAL)"
@@ -283,3 +284,6 @@ clean:
 	done
 	@echo "CLEANNNNNNNEDDDDDD: $(BIN_DIR) ANNNNNNNNNND $(SAMPLES_DIR)"
 	@echo "--------------------------DONE---------------------------------"
+
+clean-dump:
+	@rm -vf $(PS2GL_LOCAL)/GS_DUMP/hard/* $(PS2GL_VENDORED)/GS_DUMP/hard/*
