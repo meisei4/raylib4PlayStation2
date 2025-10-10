@@ -23,10 +23,10 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "RGB Cube");
 
     //TODO: this causes issues only with the DrawArrays nature of raylib...
-    // where i have to understand RGB vs RGBA and the GS tags stuff:
+    // where i have to understand RGB vs RGBA and the GS tags stuff I believe (its how the alpha gets assigned from the material actually or something? ignore for now)
+    rlDisableColorBlend();
 
     SetTargetFPS(60);
-    rlDisableColorBlend();
     load_rgb_cube_model();
     while (!WindowShouldClose())
     {

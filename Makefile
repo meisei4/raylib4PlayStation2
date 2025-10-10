@@ -245,6 +245,7 @@ samples:
 	@echo "--------------------------DONE---------------------------------"
 
 clean-samples:
+	@rm -vf $(PS2GL_LOCAL)/GS_DUMP/hard/* $(PS2GL_VENDORED)/GS_DUMP/hard/*
 	@echo "CLEANNNNNNNNNNNING: $(BIN_DIR) ANNNNNNNNNND $(SAMPLES_DIR)"
 	@rm -rf $(BIN_DIR)
 	@find $(SAMPLES_DIR) -type f -name Makefile -print0 \

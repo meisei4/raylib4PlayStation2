@@ -24,7 +24,6 @@ int main(void)
 
     SetTargetFPS(60);
     gen_rgb_cube_model();
-    rlDisableColorBlend();
     while (!WindowShouldClose())
     {
         cube_spin_angle += 0.2f;
@@ -42,8 +41,8 @@ int main(void)
                 Vector3 position = (Vector3){0.0f, 0.0f, cube_z};
                 Vector3 rotation_axis = (Vector3){0.0f, 1.0f, 0.0f};
                 Vector3 scale = (Vector3){1.0f, 1.0f, 1.0f};
-                // DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
-                DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, MAGENTA);
+                DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
+                // DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, MAGENTA);
             EndMode3D();
         EndDrawing();
     }
@@ -55,8 +54,7 @@ int main(void)
 static void gen_rgb_cube_model(void)
 {
     Mesh cube_mesh = GenMeshCube(2.0f, 2.0f, 2.0f);
-    //TODO: WORKING ON PVC NOWWWWWWWWWWWW
-    // apply_barycentric_palette_to_mesh(&cube_mesh);
+    apply_barycentric_palette_to_mesh(&cube_mesh);
     cube_model = LoadModelFromMesh(cube_mesh);
 }
 
@@ -66,20 +64,20 @@ static void apply_barycentric_palette_to_mesh(Mesh *mesh)
     if (!mesh->colors) mesh->colors = (unsigned char *)MemAlloc(mesh->vertexCount * 4 * sizeof(unsigned char));
 
     const Vector3 ref[8] = {
-        {-1, -1, -1}, // v1
-        { 1, -1, -1}, // v2
-        { 1,  1, -1}, // v3
-        {-1,  1, -1}, // v4
-        {-1, -1,  1}, // v5
-        { 1, -1,  1}, // v6
-        { 1,  1,  1}, // v7
-        {-1,  1,  1}  // v8
+        {-1, -1, -1}, 
+        { 1, -1, -1},
+        { 1,  1, -1},
+        {-1,  1, -1},
+        {-1, -1,  1},
+        { 1, -1,  1},
+        { 1,  1,  1},
+        {-1,  1,  1}
     };
 
     const unsigned char palette[3][3] = {
-        {255, 0, 0},  // Red
-        {0, 255, 0},  // Green
-        {0, 0, 255}   // Blue
+        {255, 0, 0},  
+        {0, 255, 0},  
+        {0, 0, 255}   
     };
 
     for (int i = 0; i < mesh->vertexCount; i++)
