@@ -2,7 +2,7 @@ EE_BIN = raylib.elf
 
 
 EE_OBJS = main.o 
-EE_LIBS =  -lraylib -lps2gl -lps2stuff -lpad -ldma  #-lps2glut
+EE_LIBS =  -lraylib -lps2gl -lps2stuff -lpad -ldma  -lps2glut
 EE_CFLAGS = -I$(PS2SDK)/ports/include -I../shared_code/ 
 EE_CXXFLAGS := -I$(PS2SDK)/ports/include -I../shared_code/
 

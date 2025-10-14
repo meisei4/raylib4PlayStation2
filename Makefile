@@ -287,4 +287,4 @@ clean:
 	@echo "--------------------------DONE---------------------------------"
 
 clean-dump:
-	@rm -vf $(PS2GL_LOCAL)/GS_DUMP/hard/* $(PS2GL_VENDORED)/GS_DUMP/hard/*
+	@rm -vf $(PS2GL_LOCAL)/GS_DUMP/hard/* $(PS2GL_LOCAL)/GS_DUMP/soft/* $(PS2GL_VENDORED)/GS_DUMP/hard/* $(PS2GL_VENDORED)/GS_DUMP/soft/*

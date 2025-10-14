@@ -4,7 +4,7 @@ EE_BIN  = raylib.elf
 PS2RUN := main_ps2
 
 EE_OBJS = main.o
-EE_LIBS = -lraylib -lps2gl -lps2stuff -lpad -ldma #-lps2glut
+EE_LIBS = -lraylib -lps2gl -lps2stuff -lpad -ldma -lps2glut
 
 EE_CFLAGS = -I$(PS2SDK)/ports/include -I../shared_code/
 EE_CXXFLAGS := -I$(PS2SDK)/ports/include -I../shared_code/
@@ -51,29 +51,23 @@ RAYLIB_DESKTOP_LIB := $(RAYLIB_SRC)/libraylib_desktop.a
 
 DESKTOP ?= 0
 ifeq ($(DESKTOP),1)
-PROJECT_ROOT ?= $(shell git rev-parse --show-toplevel 2>/dev/null)
-ifeq ($(PROJECT_ROOT),)
-PROJECT_ROOT := $(abspath $(CURDIR)/../..)
-endif
-RAYLIB_SRC := $(PROJECT_ROOT)/raylib/src
-RAYLIB_DESKTOP_LIB := $(RAYLIB_SRC)/libraylib_desktop.a
 HOST_CC ?= $(shell command -v gcc 2>/dev/null || command -v cc || echo cc)
 
 $(RAYLIB_DESKTOP_LIB):
-	@cd $(RAYLIB_SRC) && \
-	  make PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_11 || (echo "raylib/src build failed"; false)
-	  cp -f "$(RAYLIB_SRC)/libraylib.a" "$(RAYLIB_DESKTOP_LIB)"; \
+	@$(MAKE) -C $(RAYLIB_SRC) clean
+	@$(MAKE) -C $(RAYLIB_SRC) PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_11
+	@cp -f "$(RAYLIB_SRC)/libraylib.a" "$(RAYLIB_DESKTOP_LIB)"
 
 main: main.c $(RAYLIB_DESKTOP_LIB)
-	$(HOST_CC) -O2 -Wall -Wextra -DPLATFORM_DESKTOP -DPLATFORM_DESKTOP_GLFW -DGRAPHICS_API_OPENGL_11 \
-	  -I../shared_code/ -I$(RAYLIB_SRC) -I$(RAYLIB_SRC)/external \
-	  $< -o ./main $(RAYLIB_DESKTOP_LIB) \
-	  -lGL -lm -lpthread -ldl -lrt -lX11 -latomic
+	$(HOST_CC) -O2 -Wall -Wextra -DPLATFORM_DESKTOP -DGRAPHICS_API_OPENGL_11 \
+	  -I$(RAYLIB_SRC) -I$(RAYLIB_SRC)/external \
+	  $< -o main $(RAYLIB_DESKTOP_LIB) -lGL -lm -lpthread -ldl -lrt -latomic
 
 all: $(EE_BIN) main $(PS2RUN)
 else
 all: $(EE_BIN) $(PS2RUN)
 endif
+
 
 $(PS2RUN): $(EE_BIN)
 	@echo '#!/usr/bin/env bash' >  $@
@@ -90,7 +84,7 @@ install: $(EE_BIN)
 	cp $(EE_BIN) /usr/local/ps2dev/isos
 
 clean:
-	rm -vf *.elf *.o *.a *.s main $(PS2RUN) build.summary $(EE_BIN:.elf=.map) main.map $(LOG) $(RAYLIB_DESKTOP_LIB) $(RAYLIB_SRC)/libraylib.a
+	rm -vf *.elf *.o *.a *.s main $(PS2RUN) build.summary $(EE_BIN:.elf=.map) main.map $(LOG)  $(RAYLIB_DESKTOP_LIB) $(RAYLIB_DESKTOP_BUILD)
 
 PS2_RAYLIB   ?= /usr/local/ps2dev/ps2sdk/ports/lib/libraylib.a
 PS2_PS2GL    ?= /usr/local/ps2dev/ps2sdk/ports/lib/libps2gl.a

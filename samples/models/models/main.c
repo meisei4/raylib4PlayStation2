@@ -8,13 +8,11 @@
 
 static float cube_spin_angle = 0.0f;
 static const float cube_z = -6.0f;
-// static const float cube_forward_rotation = -18.0f;
 
 static Model cube_model;
 
 static void load_rgb_cube_model(void);
 static void apply_barycentric_palette_to_mesh(Mesh *mesh);
-static void draw_cube_model(void);
 
 int main(void)
 {
@@ -22,10 +20,9 @@ int main(void)
     const int screenHeight = ATTR_PLAYSTATION2_HEIGHT;
     InitWindow(screenWidth, screenHeight, "RGB Cube");
 
-    //TODO: this causes issues only with the DrawArrays nature of raylib...
-    // where i have to understand RGB vs RGBA and the GS tags stuff I believe (its how the alpha gets assigned from the material actually or something? ignore for now)
+    //TODO: this causes issues only with the DrawArrays nature of raylib... should not need to flip back...
     rlDisableColorBlend();
-
+    rlDisableBackfaceCulling(); //TODO: something funky happens here with raylib opengl11? im not sure why...
     SetTargetFPS(60);
     load_rgb_cube_model();
     while (!WindowShouldClose())
@@ -45,7 +42,8 @@ int main(void)
                 Vector3 position = (Vector3){0.0f, 0.0f, cube_z};
                 Vector3 rotation_axis = (Vector3){0.0f, 1.0f, 0.0f};
                 Vector3 scale = (Vector3){1.0f, 1.0f, 1.0f};
-                DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
+                DrawModelWiresEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
+                // DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
             EndMode3D();
         EndDrawing();
     }
@@ -78,9 +76,9 @@ static void apply_barycentric_palette_to_mesh(Mesh *mesh)
     };
 
     const unsigned char palette[3][3] = {
-        {255, 0, 0},  // Red
-        {0, 255, 0},  // Green
-        {0, 0, 255}   // Blue
+        {255, 0, 0},
+        {0, 255, 0},
+        {0, 0, 255}
     };
 
     for (int i = 0; i < mesh->vertexCount; i++)
