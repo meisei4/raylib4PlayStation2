@@ -66,12 +66,11 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
-               rlDisableColorBlend(); //TODO: this is still all chaos with ps2gl idk
+               rlDisableColorBlend(); //TODO: needed for real hardware, this is the core issue
                DrawModel(models[currentModel], position, 1.0f, WHITE);
                DrawGrid(10, 1.0);
             EndMode3D();
 
-            rlEnableColorBlend();
         DrawRectangle(30, 400, 360, 30, Fade(SKYBLUE, 0.5f));
         DrawRectangleLines(30, 400, 360, 30, Fade(DARKBLUE, 0.5f));
         DrawText("CONTROLLER LEFT BUTTON to CYCLE PROCEDURAL MODELS", 40, 410, 10, BLUE);

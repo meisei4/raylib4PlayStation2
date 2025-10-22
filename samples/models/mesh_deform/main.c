@@ -17,10 +17,6 @@ int main(void)
     const int screenWidth  = ATTR_PLAYSTATION2_WIDTH;
     const int screenHeight = ATTR_PLAYSTATION2_HEIGHT;
     InitWindow(screenWidth, screenHeight, "Mesh");
-
-    //TODO: this causes issues only with the DrawArrays nature of raylib... should not need to flip back...
-    rlDisableColorBlend();
-    // rlDisableBackfaceCulling(); //TODO: something funky happens here with raylib opengl11? im not sure why...
     SetTargetFPS(15);
     model = LoadModel("sphere.obj");
     ApplyRGBGradientToMesh(&model.meshes[0]);
@@ -40,11 +36,11 @@ int main(void)
                 Vector3 position = (Vector3){0.0f, 0.0f, -6.0f};
                 Vector3 rotation_axis = (Vector3){0.0f, 1.0f, 0.0f};
                 Vector3 scale = (Vector3){1.0f, 1.0f, 1.0f};
+                rlDisableColorBlend(); //TODO: same hardware issue only
                 DrawModelWiresEx(model, position, rotation_axis, spin, scale, WHITE);
                 // DrawModelEx(model, position, rotation_axis, spin, scale, WHITE);
 
             EndMode3D();
-            rlEnableColorBlend();
             DrawText("HELLOOOOOOO, this is a TEsT oF TeXt!!", 20, 400, 20, WHITE);
             rlDisableTexture();
         EndDrawing();

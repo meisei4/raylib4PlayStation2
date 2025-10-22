@@ -20,9 +20,7 @@ int main(void)
     const int screenHeight = ATTR_PLAYSTATION2_HEIGHT;
     InitWindow(screenWidth, screenHeight, "RGB Cube");
 
-    //TODO: this causes issues only with the DrawArrays nature of raylib... should not need to flip back...
-    rlDisableColorBlend();
-    rlDisableBackfaceCulling(); //TODO: something funky happens here with raylib opengl11? im not sure why...
+    rlDisableBackfaceCulling();
     SetTargetFPS(60);
     load_rgb_cube_model();
     while (!WindowShouldClose())
@@ -30,8 +28,6 @@ int main(void)
         cube_spin_angle += 0.2f;
         BeginDrawing();
             ClearBackground(BLACK);
-            rlClearScreenBuffers();
-            rlEnableDepthTest();
             Camera camera = {0};
             camera.position = (Vector3){0.0f, 0.0f, 0.0f};
             camera.target   = (Vector3){0.0f, 0.0f, -1.0f};
@@ -42,9 +38,11 @@ int main(void)
                 Vector3 position = (Vector3){0.0f, 0.0f, cube_z};
                 Vector3 rotation_axis = (Vector3){0.0f, 1.0f, 0.0f};
                 Vector3 scale = (Vector3){1.0f, 1.0f, 1.0f};
-                DrawModelWiresEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
-                // DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
+                // DrawModelWiresEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
+                DrawModelEx(cube_model, position, rotation_axis, cube_spin_angle, scale, WHITE);
             EndMode3D();
+            DrawText("HELLOOOOOOO, this is a TEsT oF TeXt!!", 20, 400, 20, WHITE);
+            rlDisableTexture();
         EndDrawing();
     }
     UnloadModel(cube_model);
