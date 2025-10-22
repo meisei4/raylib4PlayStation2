@@ -21,7 +21,7 @@ int main(void)
     //TODO: this causes issues only with the DrawArrays nature of raylib... should not need to flip back...
     rlDisableColorBlend();
     // rlDisableBackfaceCulling(); //TODO: something funky happens here with raylib opengl11? im not sure why...
-    SetTargetFPS(60);
+    SetTargetFPS(15);
     model = LoadModel("sphere.obj");
     ApplyRGBGradientToMesh(&model.meshes[0]);
     while (!WindowShouldClose())
@@ -29,7 +29,6 @@ int main(void)
         spin += 0.8f;
         BeginDrawing();
             ClearBackground(BLACK);
-            rlClearScreenBuffers();
             Camera camera = {0};
             camera.position = (Vector3){0.0f, 0.0f, 0.0f};
             camera.target   = (Vector3){0.0f, 0.0f, -1.0f};
@@ -42,13 +41,12 @@ int main(void)
                 Vector3 rotation_axis = (Vector3){0.0f, 1.0f, 0.0f};
                 Vector3 scale = (Vector3){1.0f, 1.0f, 1.0f};
                 DrawModelWiresEx(model, position, rotation_axis, spin, scale, WHITE);
-                //DrawModelEx(model, position, rotation_axis, spin, scale, WHITE);
+                // DrawModelEx(model, position, rotation_axis, spin, scale, WHITE);
 
             EndMode3D();
             rlEnableColorBlend();
             DrawText("HELLOOOOOOO, this is a TEsT oF TeXt!!", 20, 400, 20, WHITE);
             rlDisableTexture();
-            glFlush();
         EndDrawing();
     }
     UnloadModel(model);

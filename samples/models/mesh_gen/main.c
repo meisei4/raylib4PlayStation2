@@ -16,7 +16,7 @@
 #include "raylib.h"
 #include "rlgl.h"
 
-#define NUM_MODELS  9               // Parametric 3d shapes to generate
+#define NUM_MODELS  8               // Parametric 3d shapes to generate
 
 int main(void)
 {
@@ -68,7 +68,7 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
-               // rlDisableColorBlend();
+               // rlDisableColorBlend(); //TODO: this is still all chaos with ps2gl idk
                DrawModel(models[currentModel], position, 1.0f, WHITE);
                DrawGrid(10, 1.0);
             EndMode3D();
