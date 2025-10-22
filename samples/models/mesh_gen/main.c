@@ -24,11 +24,9 @@ int main(void)
     const int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "raylib [models] example - mesh generation");
-    // tsLoadFont();
 
     Image checked = GenImageChecked(2, 2, 1, 1, RED, GREEN);
     Texture2D texture = LoadTextureFromImage(checked);
-    SetTextureWrap(texture, TEXTURE_WRAP_REPEAT);
     UnloadImage(checked);
 
     Model models[NUM_MODELS] = { 0 };
@@ -68,7 +66,7 @@ int main(void)
             ClearBackground(RAYWHITE);
 
             BeginMode3D(camera);
-               // rlDisableColorBlend(); //TODO: this is still all chaos with ps2gl idk
+               rlDisableColorBlend(); //TODO: this is still all chaos with ps2gl idk
                DrawModel(models[currentModel], position, 1.0f, WHITE);
                DrawGrid(10, 1.0);
             EndMode3D();
